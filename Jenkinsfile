@@ -39,16 +39,23 @@ pipeline {
         }
 
         stage('Push vers Docker Hub') {
-            steps {
-                script {
-                    echo 'Connexion et envoi vers Docker Hub...'
-                    // Cette commande gère le docker login/push de manière sécurisée
-                    withDockerRegistry([credentialsId: "${DOCKER_HUB_ID}", url: '']) {
-                        bat "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
-                    }
-                }
+    steps {
+        script {
+            echo "Connexion et envoi vers Docker Hub..."
+            // On utilise les identifiants que tu as déjà créés (docker-hub-creds)
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', 
+                             passwordVariable: 'DOCKER_PASSWORD', 
+                             usernameVariable: 'DOCKER_USERNAME')]) {
+                
+                // Connexion via la ligne de commande standard
+                bat "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                
+                // Envoi de l'image
+                bat "docker push taphadiopdev/isi_burger:latest"
             }
         }
+    }
+}
         
         stage('Déploiement Local') {
             steps {
