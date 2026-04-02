@@ -6,8 +6,8 @@ pipeline {
         stage('Pull du code') {
             steps {
                 echo 'Récupération du code depuis GitHub...'
-                git branch: 'diallo_mamadou_burger',
-                    url: 'https://github.com/VOTRE_USERNAME/ExamenLaravel.git'
+                git branch: 'diop_moustapha_burger',
+                    url: 'https://github.com/Moustapha-diop/isi_burger.git'
             }
         }
 
