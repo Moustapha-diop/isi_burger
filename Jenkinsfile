@@ -14,16 +14,16 @@ pipeline {
         stage('Installation des dépendances Laravel') {
             steps {
                 echo 'Installation des dépendances...'
-                sh 'composer install --no-interaction --prefer-dist'
-                sh 'cp .env.example .env'
-                sh 'php artisan key:generate'
+                bat 'composer install --no-interaction --prefer-dist'
+                bat 'cp .env.example .env'
+                bat'php artisan key:generate'
             }
         }
 
         stage('Création image Docker') {
             steps {
                 echo 'Construction de l image Docker...'
-                sh 'docker build -t examen-burger:latest .'
+                bat 'docker build -t examen-burger:latest .'
             }
         }
 
