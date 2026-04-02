@@ -14,9 +14,9 @@ pipeline {
         stage('Installation des dépendances Laravel') {
             steps {
                 echo 'Installation des dépendances...'
-                bat 'composer install --no-interaction --prefer-dist'
+                bat 'C:\\laragon\\bin\\composer\\composer.bat install --no-interaction --prefer-dist'
                 bat 'cp .env.example .env'
-                bat'php artisan key:generate'
+                bat 'php artisan key:generate'
             }
         }
 
