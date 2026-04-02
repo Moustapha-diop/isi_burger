@@ -41,6 +41,8 @@ RUN php artisan config:clear
 
 # Attribution des droits sur les dossiers de stockage et de cache
 RUN chown -R www-data:www-data storage bootstrap/cache
+# À ajouter dans ton Dockerfile avant l'exposition du port 80
+RUN php artisan storage:link
 
 # Exposition du port 80 pour le web
 EXPOSE 80
