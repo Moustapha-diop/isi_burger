@@ -56,14 +56,21 @@ pipeline {
         
         stage('Déploiement Local') {
             steps {
-                echo 'Lancement du conteneur avec redirection vers la base Windows...'
+                echo 'Lancement du conteneur avec injection forcée des variables...'
                 bat "docker stop ${IMAGE_NAME}-container || ver > nul"
                 bat "docker rm ${IMAGE_NAME}-container || ver > nul"
                 
-                // Note le -e DB_HOST : on force l'image à regarder vers ton Windows
-                bat "docker run -d -p 8085:80 --name ${IMAGE_NAME}-container -e DB_HOST=host.docker.internal ${DOCKER_USER}/${IMAGE_NAME}:latest"
-                
-                echo "Application déployée sur http://localhost:8085"
+                // On force TOUTES les variables ici pour écraser le cache
+                bat """
+                docker run -d -p 8085:80 --name ${IMAGE_NAME}-container ^
+                -e DB_CONNECTION=pgsql ^
+                -e DB_HOST=host.docker.internal ^
+                -e DB_PORT=5432 ^
+                -e DB_DATABASE=ExamenLaravel2 ^
+                -e DB_USERNAME=postgres ^
+                -e DB_PASSWORD=passer ^
+                ${DOCKER_USER}/${IMAGE_NAME}:latest
+                """
             }
         }
     }
