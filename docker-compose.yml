@@ -1,20 +1,29 @@
-version: '3.8'
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
+    container_name: examenlaravel3-app-1
     ports:
       - "8085:80"
     volumes:
       - .:/var/www/html
+      - C:/laragon/www/examenlaravel3/storage/app/public:/var/www/html/storage/app/public
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_DATABASE=ExamenLaravel2
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=passer
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=mailpit
+      - MAIL_PORT=1025
     networks:
       - burger-network
 
   mailpit:
-    image: 'axllent/mailpit:latest'
+    image: axllent/mailpit:latest
+    container_name: examenlaravel3-mailpit-1
     ports:
-      - "1025:1025"
       - "8025:8025"
     networks:
       - burger-network
