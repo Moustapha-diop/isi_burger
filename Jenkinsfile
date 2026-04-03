@@ -40,7 +40,7 @@ pipeline {
                     sleep 5
                     
                     // Correction des permissions et liens
-                    bat "docker exec examenlaravel3-app-1 chown -R www-data:www-data /var/www/html/storage"
+                   bat "docker exec examenlaravel3-app-1 chown -R www-data:www-data /var/www/html/storage || ver > nul"
                     bat "docker exec examenlaravel3-app-1 php artisan storage:link --force"
                 }
             }
