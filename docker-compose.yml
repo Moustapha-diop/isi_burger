@@ -1,12 +1,12 @@
 services:
   app:
-    build: .
+    image: taphadiopdev/isi_burger:latest  # Utilise l'image buildée par Jenkins
     container_name: examenlaravel3-app-1
     ports:
       - "8086:80"
     volumes:
       - .:/var/www/html
-      - C:/laragon/www/examenlaravel3/storage/app/public:/var/www/html/storage/app/public
+      # On retire le lien absolu vers C:/laragon pour éviter les erreurs de permission
     environment:
       - DB_CONNECTION=pgsql
       - DB_HOST=host.docker.internal

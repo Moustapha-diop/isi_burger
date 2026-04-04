@@ -1,6 +1,6 @@
 FROM php:8.1-apache
 
-# Installation des dépendances système et PHP pour les PDF
+# Installation des dépendances système et PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Configuration du Document Root Apache
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+# Correction de la ligne 20 avec le signe "="
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN a2enmod rewrite
 
@@ -35,18 +36,22 @@ COPY . .
 
 # Préparation de l'environnement
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
-RUN composer install --no-interaction --prefer-dist
+
+# Installation des dépendances sans scripts pour éviter les erreurs de dossier
+RUN composer install --no-interaction --prefer-dist --no-scripts
+
 RUN php artisan key:generate --force
     
 USER root
+
 # Création des dossiers de stockage avec les bons droits
 RUN mkdir -p storage/app/public/factures \
     && mkdir -p storage/app/public/burgers \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Création du lien symbolique forcé
-RUN php artisan storage:link --force
+# IMPORTANT : J'ai supprimé la ligne "php artisan storage:link" d'ici. 
+# On la lancera APRES le démarrage du conteneur.
 
 EXPOSE 80
 CMD ["apache2-foreground"]
