@@ -132,6 +132,32 @@
                 max-width: 100% !important;
             }
         }
+        /* ── PAGINATION MOBILE ── */
+        @media (max-width: 768px) {
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px;
+            }
+
+            .pagination .page-link {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.85rem !important;
+                padding: 6px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                line-height: 1 !important;
+            }
+
+            .pagination .page-item .page-link svg,
+            .pagination .page-item .page-link span[aria-hidden] {
+                width: 14px !important;
+                height: 14px !important;
+                font-size: 0.8rem !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
