@@ -1,33 +1,4 @@
-pipeline {
-    agent any
-
-    environment {
-        DOCKER_USER     = 'taphadiopdev'
-        IMAGE_NAME      = 'isi_burger'
-        DOCKER_HUB_ID   = 'docker-hub-creds'
-    }
-
-    stages {
-        stage('Pull du code') {
-            steps {
-                git branch: 'diop_moustapha_burger', 
-                    url: 'https://github.com/Moustapha-diop/isi_burger.git'
-            }
-        }
-
-        stage('Build & Push Docker') {
-            steps {
-                script {
-                    bat "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:latest ."
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_ID}", passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        bat "docker login -u %USER% -p %PASS%"
-                        bat "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
-                    }
-                }
-            }
-        }
-
-        stage('Déploiement') {
+stage('Déploiement') {
             steps {
                 script {
                     // 1. On nettoie les anciens conteneurs
@@ -39,12 +10,15 @@ pipeline {
                     // 3. On attend que le conteneur soit bien démarré
                     sleep 5
                     
-                    // 4. L'AUTOMATISATION : On crée le lien ET on donne les droits
-                    // C'est cette ligne qui remplit "virtuellement" ton dossier public
-                    bat "docker exec examenlaravel3-app-1 php artisan storage:link --force"
+                    // 4. NETTOYAGE : On supprime le dossier public/storage s'il existe
+                    // C'est ce qui évite l'erreur "File exists"
+                    bat "docker exec examenlaravel3-app-1 rm -rf public/storage"
+                    
+                    // 5. AUTOMATISATION : On recrée le lien propre
+                    bat "docker exec examenlaravel3-app-1 php artisan storage:link"
+                    
+                    // 6. PERMISSIONS : On donne les droits pour afficher les images
                     bat "docker exec examenlaravel3-app-1 chmod -R 775 storage public/storage"
                 }
             }
         }
-    }
-}
