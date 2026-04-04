@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             'categorie_id' => $catSpecial->id
         ]);
 
-        // 3. Création d'un Gestionnaire
+        // 3. Création d'un Gestionnaire    
         $userAdmin = User::create([
             'name' => 'Admin Burger',
             'email' => 'admin@burger.sn',

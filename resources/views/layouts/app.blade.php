@@ -100,7 +100,7 @@
 
        
         @auth
-        <nav class="col-md-2 d-none d-md-block sidebar py-3">
+        <nav class="col-md-2 sidebar py-3">
             <ul class="nav flex-column gap-1">
                 @if(Auth::user()->isGestionnaire())
                     <li class="nav-item">

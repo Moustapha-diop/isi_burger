@@ -37,7 +37,7 @@ COPY . .
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 RUN composer install --no-interaction --prefer-dist
 RUN php artisan key:generate --force
-
+    
 USER root
 # Création des dossiers de stockage avec les bons droits
 RUN mkdir -p storage/app/public/factures \
