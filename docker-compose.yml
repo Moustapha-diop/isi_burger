@@ -2,6 +2,7 @@ services:
   app:
     image: taphadiopdev/isi_burger:latest  # Utilise l'image buildée par Jenkins
     container_name: examenlaravel3-app-1
+    command: sh -c "php artisan storage:link --force && apache2-foreground"
     ports:
       - "8086:80"
     volumes:

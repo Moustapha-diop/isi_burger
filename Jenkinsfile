@@ -30,18 +30,19 @@ pipeline {
         stage('Déploiement') {
             steps {
                 script {
-                    // Force la suppression des conteneurs spécifiques par leur nom pour éviter les conflits
-                    bat "docker rm -f examenlaravel3-app-1 examenlaravel3-mailpit-1 || ver > nul"
+                    // 1. On nettoie les anciens conteneurs
+                    bat "docker-compose down"
                     
-                    // Relance proprement avec docker-compose
+                    // 2. On relance avec la nouvelle image buildée
                     bat "docker-compose up -d"
                     
-                    // Attendre quelques secondes que le conteneur soit prêt
+                    // 3. On attend que le conteneur soit bien démarré
                     sleep 5
                     
-                    // Correction des permissions et liens
-                   bat "docker exec examenlaravel3-app-1 chown -R www-data:www-data /var/www/html/storage || ver > nul"
+                    // 4. L'AUTOMATISATION : On crée le lien ET on donne les droits
+                    // C'est cette ligne qui remplit "virtuellement" ton dossier public
                     bat "docker exec examenlaravel3-app-1 php artisan storage:link --force"
+                    bat "docker exec examenlaravel3-app-1 chmod -R 775 storage public/storage"
                 }
             }
         }
