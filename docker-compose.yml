@@ -1,13 +1,12 @@
 services:
   app:
-    image: taphadiopdev/isi_burger:latest  # Utilise l'image buildée par Jenkins
+    image: taphadiopdev/isi_burger:latest
     container_name: examenlaravel3-app-1
-    command: sh -c "php artisan storage:link --force && apache2-foreground"
+    command: sh -c "rm -f public/storage && php artisan storage:link && apache2-foreground"
     ports:
       - "8086:80"
     volumes:
-      - .:/var/www/html
-      # On retire le lien absolu vers C:/laragon pour éviter les erreurs de permission
+      - C:/laragon/www/examenlaravel3/storage/app/public:/var/www/html/storage/app/public
     environment:
       - DB_CONNECTION=pgsql
       - DB_HOST=host.docker.internal
@@ -16,8 +15,13 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=passer
       - MAIL_MAILER=smtp
-      - MAIL_HOST=mailpit
-      - MAIL_PORT=1025
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=moistaphadiop57@gmail.com
+      - MAIL_PASSWORD=yqowzfqipdcoyzlw
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=moistaphadiop57@gmail.com
+      - MAIL_FROM_NAME="ISI BURGER"
     networks:
       - burger-network
 

@@ -31,24 +31,19 @@ pipeline {
             }
         }
 
-        stage('Déploiement') {
-            steps {
-                script {
-                    bat "docker-compose down"
-                    bat "docker-compose up -d"
-                    sleep 10
-                    
-                    // 1. On force la création du lien avec l'option --force de Laravel
-                    // Cela règle l'erreur "The link already exists"
-                    bat "docker exec examenlaravel3-app-1 php artisan storage:link --force"
-                    
-                    // 2. On change les droits en ignorant les erreurs sur les fichiers verrouillés (.gitignore)
-                    // Le "|| ver > nul" permet de dire à Jenkins : "Même s'il y a une erreur de permission, continue !"
-                    bat "docker exec -u root examenlaravel3-app-1 chown -R www-data:www-data storage public/storage || ver > nul"
-                    bat "docker exec -u root examenlaravel3-app-1 chmod -R 775 storage public/storage || ver > nul"
-                }
-            }
+       stage('Déploiement') {
+    steps {
+        script {
+            bat "docker-compose down"
+            bat "docker-compose up -d"
+            sleep 10
+
+            // Permissions seulement
+            bat "docker exec -u root examenlaravel3-app-1 chown -R www-data:www-data storage public/storage || ver > nul"
+            bat "docker exec -u root examenlaravel3-app-1 chmod -R 775 storage public/storage || ver > nul"
         }
+    }
+}
     }
 
     post {
