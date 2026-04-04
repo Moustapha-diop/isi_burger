@@ -11,7 +11,7 @@
             --isi-red:    #e63946;
             --isi-gray:   #c2acac;
             --isi-yellow: #ea7312;
-            --isi-dark:   #1d1d1d;
+            --isi-dark:   #ffffff;
         }
 
         body {
@@ -140,7 +140,7 @@
 {{-- ── NAVBAR ── --}}
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">🍔 ISI BURGER</a>
+        <a class="navbar-brand" href="#">ISI BURGER</a>
 
         <div class="d-flex align-items-center gap-2">
             @auth
