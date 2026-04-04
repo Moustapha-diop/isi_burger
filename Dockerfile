@@ -16,16 +16,26 @@ RUN apt-get update && apt-get install -y \
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Configuration du Document Root Apache
-# Correction de la ligne 20 avec le signe "="
+# Configuration Apache - Document Root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/*.conf
 RUN a2enmod rewrite
 
-# Configuration du répertoire pour autoriser le suivi des liens symboliques
+# Configuration Apache - Autoriser les liens symboliques
 RUN echo '<Directory /var/www/html/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
+    Require all granted\n\
+</Directory>\n\
+<Directory /var/www/html/public/storage>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride None\n\
+    Require all granted\n\
+</Directory>\n\
+<Directory /var/www/html/storage>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride None\n\
     Require all granted\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
@@ -34,24 +44,23 @@ WORKDIR /var/www/html
 # Copie du code source
 COPY . .
 
-# Préparation de l'environnement
+# Préparation environnement
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Installation des dépendances sans scripts pour éviter les erreurs de dossier
-RUN composer install --no-interaction --prefer-dist --no-scripts
+# Installation des dépendances AVEC scripts (nécessaire pour dompdf)
+RUN composer install --no-interaction --prefer-dist
 
+# Génération de la clé
 RUN php artisan key:generate --force
-    
+
 USER root
 
-# Création des dossiers de stockage avec les bons droits
+# Création des dossiers et permissions
 RUN mkdir -p storage/app/public/factures \
     && mkdir -p storage/app/public/burgers \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# IMPORTANT : J'ai supprimé la ligne "php artisan storage:link" d'ici. 
-# On la lancera APRES le démarrage du conteneur.
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/public
 
 EXPOSE 80
 CMD ["apache2-foreground"]
