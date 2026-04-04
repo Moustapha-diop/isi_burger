@@ -63,7 +63,7 @@ pipeline {
 
     post {
         success {
-            echo "Déploiement réussi ! Vérifie tes burgers sur ton lien ngrok."
+            echo "Déploiement réussie ! Vérifie tes burgers sur ton lien ngrok."
         }
         failure {
             echo "Le build a échoué. Vérifie les logs de la console Jenkins."
