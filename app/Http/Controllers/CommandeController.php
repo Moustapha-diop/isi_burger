@@ -110,7 +110,7 @@ class CommandeController extends Controller
             $query->whereDate('date', $request->date);
         }
 
-        $commandes = $query->paginate(20);
+        $commandes = $query->paginate(10);
         return view('gestionnaire.commandes.index', compact('commandes'));
     }
 

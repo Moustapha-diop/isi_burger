@@ -27,7 +27,7 @@ class BurgerController extends Controller
             $query->where('nom', 'like', '%' . $request->search . '%');
         }
 
-        $burgers    = $query->paginate(12);
+        $burgers    = $query->paginate(10);
         $categories = Categorie::all();
 
         return view('burgers.catalogue', compact('burgers', 'categories'));
@@ -41,7 +41,7 @@ class BurgerController extends Controller
     // CRUD gestionnaire
     public function index()
     {
-        $burgers = Burger::with('categorie')->latest()->paginate(15);
+        $burgers = Burger::with('categorie')->latest()->paginate(10);
         return view('gestionnaire.burgers.index', compact('burgers'));
     }
 
